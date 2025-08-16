@@ -101,11 +101,11 @@ pub async fn send_bundle_with_confirmation<T>(
     bundle_results_subscription: &mut Streaming<BundleResult>,
 ) -> Result<(), Box<dyn std::error::Error>>
 where
-    T: tonic::client::GrpcService<tonic::body::BoxBody> + Send + 'static + Clone,
+    T: tonic::client::GrpcService<tonic::body::Body> + Send + 'static + Clone,
     T::Error: Into<StdError>,
     T::ResponseBody: Body<Data = Bytes> + Send + 'static,
     <T::ResponseBody as Body>::Error: Into<StdError> + Send,
-    <T as tonic::client::GrpcService<tonic::body::BoxBody>>::Future: std::marker::Send,
+    <T as tonic::client::GrpcService<tonic::body::Body>>::Future: std::marker::Send,
 {
     let bundle_signatures: Vec<Signature> =
         transactions.iter().map(|tx| tx.signatures[0]).collect();
@@ -114,7 +114,7 @@ where
 
     // grab uuid from block engine + wait for results
     let uuid = result.into_inner().uuid;
-    info!("Bundle sent. UUID: {:?}", uuid);
+    info!("Bundle sent. UUID: {uuid:?}");
 
     info!("Waiting for 5 seconds to hear results...");
     let mut time_left = 5000;
@@ -125,7 +125,7 @@ where
     .await
     {
         let instant = Instant::now();
-        info!("bundle results: {:?}", results);
+        info!("bundle results: {results:?}");
         match results.result {
             Some(BundleResultType::Accepted(Accepted {
                 slot: _s,
@@ -193,7 +193,7 @@ where
         "mainnet"
     };
     for sig in bundle_signatures.iter() {
-        info!("https://solscan.io/tx/{}?cluster={}", sig, cluster);
+        info!("https://solscan.io/tx/{sig}?cluster={cluster}");
     }
     Ok(())
 }
@@ -203,11 +203,11 @@ pub async fn send_bundle_no_wait<T>(
     searcher_client: &mut SearcherServiceClient<T>,
 ) -> Result<Response<SendBundleResponse>, Status>
 where
-    T: tonic::client::GrpcService<tonic::body::BoxBody> + Send + 'static + Clone,
+    T: tonic::client::GrpcService<tonic::body::Body> + Send + 'static + Clone,
     T::Error: Into<StdError>,
     T::ResponseBody: Body<Data = Bytes> + Send + 'static,
     <T::ResponseBody as Body>::Error: Into<StdError> + Send,
-    <T as tonic::client::GrpcService<tonic::body::BoxBody>>::Future: std::marker::Send,
+    <T as tonic::client::GrpcService<tonic::body::Body>>::Future: std::marker::Send,
 {
     // convert them to packets + send over
     let packets: Vec<_> = transactions
