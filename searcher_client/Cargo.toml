@@ -13,6 +13,6 @@ solana-client = "=2.2"
 solana-metrics = "=2.2"
 solana-sdk = "=2.2"
 solana-transaction-status = "=2.2"
-thiserror = "2.0.14"
+thiserror = "2.0.12"
 tokio = "1"
 tonic = { version = "0.10", features = ["tls", "tls-roots", "tls-webpki-roots"] }
